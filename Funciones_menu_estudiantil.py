@@ -41,14 +41,14 @@ def coursesInfo(file):
     return [subject,courses]
 
 
-def baseData():
+def database():
     """Esta funcion une las 2 bases de datos principales que son la de los cursos y la de los estudiantes
     y retorna un diccionario donde las claves seran Cursos y Estudiantes y cada uno tiene su respectiva
     informacion"""
     courses=coursesInfo("subjects.txt")
     students=studentsInfo("students.txt")
-    baseData_1={"Cursos":courses,"Estudiantes":students}
-    return baseData_1
+    database_1={"Cursos":courses,"Estudiantes":students}
+    return database_1
    
 '''def deleteCharacter(character,character2,word):
     Esta funcion tiene como funcionamiento basico eleminar 2 caracteres 
@@ -64,7 +64,7 @@ def baseData():
             info=info+j
     return info '''
 
-def coursesPath(baseData,student):
+def coursesPath(database,student):
     """Esta funcion tiene como parametros de entrada la base de datos completa y el nombre del
     estudiante, esta funcion busca entre todo el diccionario de cursos a ver a cuales pertenece el
     estudiante, y apartir de aqui se añaden a un acumulador la cantidad de creditos de todos los cursos 
@@ -72,9 +72,9 @@ def coursesPath(baseData,student):
     studentSubject=[]
     totalCredits=0
     credit_finalNote=0
-    for i in baseData["Cursos"][1]:
+    for i in database["Cursos"][1]:
         finalNote=0
-        for j in baseData["Cursos"][0][i]:
+        for j in database["Cursos"][0][i]:
             if type(j)==type(()):
                 creditNotes=j
             else:
@@ -95,12 +95,12 @@ def coursesPath(baseData,student):
                         credit_finalNote=credit_finalNote+finalNote*int(creditNotes[0])
     return [totalCredits,credit_finalNote,studentSubject]
 
-def finalNotes(baseData,student,course):
+def finalNotes(database,student,course):
     """ Esta funcion tiene como parametros de entrada la base de datos completa, student que el estudiante
     al que le vamos a sacar su nota fiaal de un curso especifico, en este caso course especifica este 
      haciendo uso de las notas totales que tiene cada curso y de las notas que presente cada estudiante"""
     finalNote=0
-    for i in baseData["Cursos"][0][course]:
+    for i in database["Cursos"][0][course]:
         if type(i)==type(()):
             totalNotes=i
             pass
@@ -141,23 +141,23 @@ def name(name):
             return False
     return True
     
-def returnStudents(baseData_1):
+def returnStudents(database_1):
     """Esta funcion tiene como parametro de entrada la base de datos completa, la limitaremos para
     utilizar la informacion de los estudiantes, y de esta forma situar la informacion como en las 
     plantillas para poder ser guardada"""
-    students_Id=baseData_1["Estudiantes"][1]
+    students_Id=database_1["Estudiantes"][1]
     txt=""
     for i in students_Id:
-        student_Name=baseData_1["Estudiantes"][0][i]
+        student_Name=database_1["Estudiantes"][0][i]
         result=i+";"+student_Name
         txt=txt+result+'\n'
     return txt
 
-def returnCourses(baseData_1):
-    """Como parametro de entrada tendremos a baseData_1 que es la base de datos completa, la limitaremos 
+def returnCourses(database_1):
+    """Como parametro de entrada tendremos a database_1 que es la base de datos completa, la limitaremos 
     a utilizar la informacion de los cursos para ir desglosando su informacion y poniendola en una variable
     vacia, para que quede como en la plantilla"""
-    courses=baseData_1["Cursos"]
+    courses=database_1["Cursos"]
     txt=""
     for i in courses[1]:
         txt=txt+i+";"+courses[0][i][0][0]+";"+courses[0][i][0][1]+'\n'
@@ -181,11 +181,11 @@ def saveFile(File,message):
     file.write(message)
     file.close()
 
-def htmlVis(baseData,student):
+def htmlVis(database,student):
     #basic='<!DOCTYPE html><html><title>W3.CSS</title><meta name="viewport" content="width=device-width, initial-scale=1"><body><div class="w3-container"><h1 style="text-align: center">Reporte Final de notas</h1><h3 style="text-align: center">Informacion del estudiante</h3><h4 style="text-align: center">Nombre del estudiante: </h4><h4 style="text-align: center">Cedula del estudiante: </h4><h2 style="text-align: center">Reporte Notas</h2><table class="w3-table"><tr style="text-align: center"><th>Curso</th><th style="text-align: center">Creditos</th><th style="text-align: center">Nota Final</th></tr>'
     date=str(tm.datetime.now())
     date=date[:-7]
-    average=coursesPath(baseData,student)
+    average=coursesPath(database,student)
     basic="""<!DOCTYPE html>
     <html>
     <head>
@@ -214,7 +214,7 @@ def htmlVis(baseData,student):
     <body>
     <h1>Reporte final de notas</h1>
     <h4>Informacion del estudiante</h4>
-    <p>Estudiante: """+baseData["Estudiantes"][0][student]+"""</p>
+    <p>Estudiante: """+database["Estudiantes"][0][student]+"""</p>
     <p>Cedula :"""+student+""" </p>
     <h4>Reporte notas </h4>
     <table>
@@ -241,14 +241,14 @@ def htmlVis(baseData,student):
     </html>"""
     
     date=date.replace(":",".")
-    nameFile=date+"-"+baseData["Estudiantes"][0][student]+"-"+student
+    nameFile=date+"-"+database["Estudiantes"][0][student]+"-"+student
     nameFile_1=nameFile+".html"
     file=open(nameFile_1,'w')
-    info=coursesPath(baseData,student)[2]
+    info=coursesPath(database,student)[2]
     txt=""
     for i in info:
-        note=finalNotes(baseData,student,i)
-        txt=txt+"<tr><td>"+i+"</td>"+"<td>"+baseData["Cursos"][0][i][0][0]+"</td>"+"<td>{notes:.2f}</td>".format(notes=note)+"</tr>"
+        note=finalNotes(database,student,i)
+        txt=txt+"<tr><td>"+i+"</td>"+"<td>"+database["Cursos"][0][i][0][0]+"</td>"+"<td>{notes:.2f}</td>".format(notes=note)+"</tr>"
     txt=basic+txt+rest
     file.write(txt)
     file.close()

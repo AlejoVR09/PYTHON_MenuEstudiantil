@@ -1,7 +1,7 @@
 import Funciones_menu_estudiantil as bd
 
-baseData=bd.baseData()
-print(baseData)
+database=bd.database()
+print(database)
 while True:
     print("\nBASE DE DATOS ESTUDIANTIL\n\n1.Menu de estudiantes\n2.Menu de cursos\n3.Salir")
     choice=input("Digite la opcion: ")
@@ -9,23 +9,27 @@ while True:
         while True:
             print("\nMENU DE ESTUDIANTES\n\n1.Agregar estudiante\n2.Estudiantes registrados\n3.Informacion de estudiantes\n4.Salir")
             choice_1=input("Digite la opcion: ")
+            idStudents=database["Estudiantes"][1]
             if choice_1=="1":
-                name_1=input("Digite el nombre del estudiante: ")
-                while bd.name(name_1)==False:
-                    name_1=input("Digite el nombre del estudiante: ")
-                cedula_1=input("Digite la cedula del estudiante: ")
-                if cedula_1 in baseData["Estudiantes"][0]:
+                nameStudent=input("Digite el nombre del estudiante: ")
+                while bd.name(nameStudent)==False:
+                    nameStudent=input("Digite el nombre del estudiante: ")
+                    
+                idStudent=input("Digite la cedula del estudiante: ")
+                while bd.limits(idStudent,10)==False:
+                    idStudent=input("Digite la cedula del estudiante: ")
+                if idStudent in idStudents:
                     print("Este estudiante ya esta registrado.")
                     continue
-                while bd.limits(cedula_1,10)==False:
-                    cedula_1=input("Digite la cedula del estudiante: ")
-                baseData["Estudiantes"][1].append(cedula_1)
-                baseData["Estudiantes"][0][cedula_1]=name_1
+                
+                database["Estudiantes"][1].append(idStudent)
+                database["Estudiantes"][0][idStudent]=nameStudent
+                
             elif choice_1=="2":
                 j=1
                 print()
-                for i in baseData["Estudiantes"][1]:
-                    print(str(j)+"."+str(i)+": "+baseData["Estudiantes"][0][i])
+                for i in idStudents:
+                    print(str(j)+"."+str(i)+": "+database["Estudiantes"][0][i])
                     j=j+1
                 print("\nPresione ENTER para continuar: ")
                 input()
@@ -33,35 +37,35 @@ while True:
                 j=1
                 list_1=[]
                 print()
-                for i in baseData["Estudiantes"][1]:
-                    print(str(j)+"."+str(i)+": "+baseData["Estudiantes"][0][i])
+                for i in idStudents:
+                    print(str(j)+"."+str(i)+": "+database["Estudiantes"][0][i])
                     list_1.append(str(j))
                     j=j+1
                 choice_e1=input("Seleccione un estudiante: ")
                 while choice_e1 not in list_1:
                     choice_e1=input("Seleccione un estudiante: ")
                 choice_e1=int(choice_e1)-1
-                estudiante_2=baseData["Estudiantes"][1][choice_e1]
+                estudiante_2=idStudents[choice_e1]
                 while True:
                     print("\n1.Promedio de estudiante\n2.Matricular estudiante a un curso\n3.Ingresar notas de un curso\n4.Cursos matriculados del estudiante\n5.Generar informacion del estudiante\n6.Salir\n")
                     choice_2=input("Digite la opcion: ")
-                    coursesStudent=bd.coursesPath(baseData,estudiante_2)
+                    coursesStudent=bd.coursesPath(database,estudiante_2)
                     if choice_2=="1":
-                        average_1=bd.coursesPath(baseData,estudiante_2)
+                        average_1=bd.coursesPath(database,estudiante_2)
                         if average_1[0]==0:
                             print("\nEl estudiante no esta matriculado en ningun curso\n")
                             print("\nPresiones ENTER para continuar: ")   
                             input()
                         else:
                             average=average_1[1]/average_1[0]
-                            print("\nESTUDIANTE\n"+baseData["Estudiantes"][0][estudiante_2]+":"+estudiante_2+"\n\nPromedio semestre actual: {0:.2f}".format(average))
+                            print("\nESTUDIANTE\n"+database["Estudiantes"][0][estudiante_2]+":"+estudiante_2+"\n\nPromedio semestre actual: {0:.2f}".format(average))
                             print("\nPresiones ENTER para continuar: ")   
                             input()
                     elif choice_2=="2":
                         matriculateCourses=[]
                         index_s=[]
                         j=1
-                        for i in baseData["Cursos"][1]:
+                        for i in database["Cursos"][1]:
                             if i not in coursesStudent[2]:
                                 matriculateCourses.append(i)
                                 index_s.append(str(j))
@@ -80,12 +84,12 @@ while True:
                             else:
                                 while choice_4 not in index_s:
                                     choice_4=input("Seleccione el curso o ingrese format q para salir: ")
-                                baseData["Cursos"][0][matriculateCourses[int(choice_4)-1]].append([estudiante_2])
+                                database["Cursos"][0][matriculateCourses[int(choice_4)-1]].append([estudiante_2])
                     elif choice_2=="3":
                         matriculateCourses=[]
                         index_s=[]
                         j=1
-                        for i in baseData["Cursos"][1]:
+                        for i in database["Cursos"][1]:
                             if i in coursesStudent[2]:
                                 matriculateCourses.append(i)
                                 index_s.append(str(j))
@@ -101,12 +105,12 @@ while True:
                             choice_4=input("Seleccione el curso: ")
                             while choice_4 not in index_s:
                                 choice_4=input("Seleccione el curso: ")
-                        position=baseData["Cursos"][0][matriculateCourses[int(choice_4)-1]]
+                        position=database["Cursos"][0][matriculateCourses[int(choice_4)-1]]
                         for h in position:
                             if h[0]==estudiante_2:
-                                position=baseData["Cursos"][0][matriculateCourses[int(choice_4)-1]][position.index(h)]
-                                position_1=baseData["Cursos"][0][matriculateCourses[int(choice_4)-1]].index(h)
-                        maxNotes=int(baseData["Cursos"][0][matriculateCourses[int(choice_4)-1]][0][1])
+                                position=database["Cursos"][0][matriculateCourses[int(choice_4)-1]][position.index(h)]
+                                position_1=database["Cursos"][0][matriculateCourses[int(choice_4)-1]].index(h)
+                        maxNotes=int(database["Cursos"][0][matriculateCourses[int(choice_4)-1]][0][1])
                         minusNotes=(maxNotes+1)-len(position[0:])
                         if minusNotes==0:
                             print("\nEl estudiante tiene todas las notas del curso")
@@ -134,7 +138,7 @@ while True:
                                             print("Rango (0 hasta 5).")
                                             continue
                                          else:
-                                            baseData["Cursos"][0][matriculateCourses[int(choice_4)-1]][position_1].append(str(notes))
+                                            database["Cursos"][0][matriculateCourses[int(choice_4)-1]][position_1].append(str(notes))
                                             break
                                 
                         print("\nDATOS INGRESADOS\n\nPresione ENTER para continuar: ")
@@ -142,14 +146,14 @@ while True:
                         
                     elif choice_2=="4":
                         j=1
-                        print("\nMATERIAS MATRICULADAS POR: "+baseData["Estudiantes"][0][estudiante_2]+"\n")
+                        print("\nMATERIAS MATRICULADAS POR: "+database["Estudiantes"][0][estudiante_2]+"\n")
                         for i in coursesStudent[2]:
                             print(str(j)+"."+i.title())
                             j=j+1
                         print("\nPresione ENTER para continuar: ")
                         input()
                     elif choice_2=="5":
-                        bd.htmlVis(baseData,estudiante_2)
+                        bd.htmlVis(database,estudiante_2)
                     elif choice_2=="6":
                         break
             elif choice_1=="4":
@@ -158,10 +162,11 @@ while True:
         while True:
                 print("\nMENU DE CURSOS\n\n1.Crear curso nuevo\n2.Cursos registrados\n3.Porcentaje de estudiantes que aprueba un curso\n4.Estudiantes matriculados en un curso\n5.Salir")
                 choice_3=input("Digite la opcion: ")
+                courses=database["Cursos"][1]
                 if choice_3=="1":
-                    course_1=input("Digite el nombre del curso: ")
-                    course_1=course_1.lower()
-                    if course_1 in baseData["Cursos"][1]:
+                    courseName=input("Digite el nombre del curso: ").lower()
+
+                    if courseName in courses:
                         print("Ese curso ya existe")
                         continue
                     else:
@@ -171,44 +176,40 @@ while True:
                         notes=""
                         while bd.limits(notes,1)==False:
                             notes=input("Digite el numero de notas que tendra el curso(maximo 9): ")
-                        baseData["Cursos"][1].append(course_1)
-                        baseData["Cursos"][0][course_1]=[(credit,notes)]
+                        database["Cursos"][1].append(courseName)
+                        database["Cursos"][0][courseName]=[(credit,notes)]
                 elif choice_3=="2":
                     print()
                     j=1
-                    for i in baseData["Cursos"][1]:
-                        print(str(j)+"."+i+"---"+"Creditos: "+str(baseData["Cursos"][0][i][0][0]))
+                    for i in courses:
+                        print(str(j)+"."+i+"---"+"Creditos: "+str(database["Cursos"][0][i][0][0]))
                         j=j+1
                     print("\nPresione ENTER para continuar: ")
                     input()
                 elif choice_3=="3":
                     print()
+                    
                     j=1
-                    courses=[]
                     index_s=[]
-                    for i in baseData["Cursos"][1]:
+                    for i in courses:
                         print(str(j)+"."+i)
-                        courses.append(i)
                         index_s.append(str(j))
                         j=j+1           
                     choice_course1=input("Seleccione el curso: ")
                     while choice_course1 not in index_s:
                         choice_course1=input("Seleccione el curso: ")
-                    j=0
+            
                     winners=0
                     losers=0
                     totalStudents=0
-                    
-                    for i in baseData["Cursos"][0][courses[int(choice_course1)-1]]:
-                        estudiante_3=baseData["Cursos"][0][courses[int(choice_course1)-1]][j][0]
-                        if len(estudiante_3)==10:
-                            estudiante_4=bd.finalNotes(baseData,estudiante_3,courses[int(choice_course1)-1])
-                            if estudiante_4<3.0:
-                                losers=losers+1
-                            else:
-                                winners=winners+1
-                            totalStudents=totalStudents+1                   
-                        j=j+1
+
+                    for i in database["Cursos"][0][courses[int(choice_course1)-1]][1:]:
+                        validatedNote=bd.finalNotes(database,i[0],courses[int(choice_course1)-1])
+                        if validatedNote<3.0:
+                            losers=losers+1
+                        else:
+                            winners=winners+1
+                        totalStudents=totalStudents+1 
                     if totalStudents==0:
                         print("Este curso no tiene estudiantes matriculadoss.")
                     else:
@@ -219,22 +220,18 @@ while True:
                 elif choice_3=="4":
                     print()
                     j=1
-                    courses=[]
                     index_s=[]
-                    for i in baseData["Cursos"][1]:
+                    for i in courses:
                         print(str(j)+"."+i)
-                        courses.append(i)
                         index_s.append(str(j))
                         j=j+1           
                     choice_course1=input("Seleccione el curso: ")
                     while choice_course1 not in index_s:
                         choice_course1=input("Seleccione el curso: ")
-                    j=0
+                    j=1
                     print()
-                    for i in baseData["Cursos"][0][courses[int(choice_course1)-1]]:
-                        estudiante_3=baseData["Cursos"][0][courses[int(choice_course1)-1]][j][0]
-                        if len(estudiante_3)==10:
-                            print(str(j)+"."+estudiante_3+":"+baseData["Estudiantes"][0][estudiante_3])
+                    for i in database["Cursos"][0][courses[int(choice_course1)-1]][1:]:
+                        print(str(j)+"."+i[0]+":"+database["Estudiantes"][0][i[0]])
                         j=j+1
                     if j==1:
                         print("No hay estudiantes matriculados en este curso")
@@ -249,5 +246,5 @@ while True:
     elif choice=="3":
         break
 
-bd.saveFile("students.txt",bd.returnStudents(baseData))
-bd.saveFile("subjects.txt",bd.returnCourses(baseData))
+bd.saveFile("students.txt",bd.returnStudents(database))
+bd.saveFile("subjects.txt",bd.returnCourses(database))
