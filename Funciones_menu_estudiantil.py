@@ -113,13 +113,13 @@ def finalNotes(database,student,course):
                         finalNote=finalNote+float(j)
     finalNote=finalNote/int(totalNotes[1])
     return finalNote
-def limits(cedula,limit):
+def limits(identification,limit):
     """Esta funcion tiene como parametros de entrada, cedula que es el dato que vamos a verificar y
     limit que es el limite de datos que se supone que debe haber en el dato, se verifica primero que sean
     todos numeros y que no contengan espacio, despues que este dato no se pase del limite o sea menor a este
     """
-    if cedula.isdigit():
-        if len(cedula)!=limit:
+    if identification.isdigit():
+        if len(identification)!=limit:
             return False
         else:
             return True
@@ -141,23 +141,23 @@ def name(name):
             return False
     return True
     
-def returnStudents(database_1):
+def returnStudents(database):
     """Esta funcion tiene como parametro de entrada la base de datos completa, la limitaremos para
     utilizar la informacion de los estudiantes, y de esta forma situar la informacion como en las 
     plantillas para poder ser guardada"""
-    students_Id=database_1["Estudiantes"][1]
+    students_Id=database["Estudiantes"][1]
     txt=""
     for i in students_Id:
-        student_Name=database_1["Estudiantes"][0][i]
+        student_Name=database["Estudiantes"][0][i]
         result=i+";"+student_Name
         txt=txt+result+'\n'
     return txt
 
-def returnCourses(database_1):
-    """Como parametro de entrada tendremos a database_1 que es la base de datos completa, la limitaremos 
+def returnCourses(database):
+    """Como parametro de entrada tendremos a database que es la base de datos completa, la limitaremos 
     a utilizar la informacion de los cursos para ir desglosando su informacion y poniendola en una variable
     vacia, para que quede como en la plantilla"""
-    courses=database_1["Cursos"]
+    courses=database["Cursos"]
     txt=""
     for i in courses[1]:
         txt=txt+i+";"+courses[0][i][0][0]+";"+courses[0][i][0][1]+'\n'
@@ -171,7 +171,6 @@ def returnCourses(database_1):
                 txt_1=txt_1[:-1]
                 txt=txt+txt_1+'\n'
         txt=txt+'\n'
-    return txt
     return txt
                 
 def saveFile(File,message):

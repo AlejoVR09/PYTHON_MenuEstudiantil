@@ -35,30 +35,30 @@ while True:
                 input()
             elif choice_1=="3":
                 j=1
-                list_1=[]
+                listIndex=[]
                 print()
                 for i in idStudents:
                     print(str(j)+"."+str(i)+": "+database["Estudiantes"][0][i])
-                    list_1.append(str(j))
+                    listIndex.append(str(j))
                     j=j+1
-                choice_e1=input("Seleccione un estudiante: ")
-                while choice_e1 not in list_1:
-                    choice_e1=input("Seleccione un estudiante: ")
-                choice_e1=int(choice_e1)-1
-                estudiante_2=idStudents[choice_e1]
+                choiceStudent=input("Seleccione un estudiante: ")
+                while choiceStudent not in listIndex:
+                    choiceStudent=input("Seleccione un estudiante: ")
+                choiceStudent=int(choiceStudent)-1
+                studentChose=idStudents[choiceStudent]
                 while True:
                     print("\n1.Promedio de estudiante\n2.Matricular estudiante a un curso\n3.Ingresar notas de un curso\n4.Cursos matriculados del estudiante\n5.Generar informacion del estudiante\n6.Salir\n")
                     choice_2=input("Digite la opcion: ")
-                    coursesStudent=bd.coursesPath(database,estudiante_2)
+                    coursesStudent=bd.coursesPath(database,studentChose)
                     if choice_2=="1":
-                        average_1=bd.coursesPath(database,estudiante_2)
+                        average_1=bd.coursesPath(database,studentChose)
                         if average_1[0]==0:
                             print("\nEl estudiante no esta matriculado en ningun curso\n")
                             print("\nPresiones ENTER para continuar: ")   
                             input()
                         else:
                             average=average_1[1]/average_1[0]
-                            print("\nESTUDIANTE\n"+database["Estudiantes"][0][estudiante_2]+":"+estudiante_2+"\n\nPromedio semestre actual: {0:.2f}".format(average))
+                            print("\nESTUDIANTE\n"+database["Estudiantes"][0][studentChose]+":"+studentChose+"\n\nPromedio semestre actual: {0:.2f}".format(average))
                             print("\nPresiones ENTER para continuar: ")   
                             input()
                     elif choice_2=="2":
@@ -84,7 +84,7 @@ while True:
                             else:
                                 while choice_4 not in index_s:
                                     choice_4=input("Seleccione el curso o ingrese format q para salir: ")
-                                database["Cursos"][0][matriculateCourses[int(choice_4)-1]].append([estudiante_2])
+                                database["Cursos"][0][matriculateCourses[int(choice_4)-1]].append([studentChose])
                     elif choice_2=="3":
                         matriculateCourses=[]
                         index_s=[]
@@ -105,55 +105,63 @@ while True:
                             choice_4=input("Seleccione el curso: ")
                             while choice_4 not in index_s:
                                 choice_4=input("Seleccione el curso: ")
-                        position=database["Cursos"][0][matriculateCourses[int(choice_4)-1]]
-                        for h in position:
-                            if h[0]==estudiante_2:
-                                position=database["Cursos"][0][matriculateCourses[int(choice_4)-1]][position.index(h)]
-                                position_1=database["Cursos"][0][matriculateCourses[int(choice_4)-1]].index(h)
-                        maxNotes=int(database["Cursos"][0][matriculateCourses[int(choice_4)-1]][0][1])
-                        minusNotes=(maxNotes+1)-len(position[0:])
-                        if minusNotes==0:
-                            print("\nEl estudiante tiene todas las notas del curso")
-                            print("\nPresione ENTER para continuar: ")
-                            input()
-                        else:
-                            comp=0
-                            print("NOTAS DISPONIBLES: "+str(minusNotes))
-                            for j in range(0,minusNotes):
-                                if comp==1:
-                                    break
-                                notes=""
-                                while True:
-                                    try:
-                                        notes=input("Digite la nota o q para salir: ")
-                                        if notes=="q":
-                                            comp=1
-                                            break
+                            position=database["Cursos"][0][matriculateCourses[int(choice_4)-1]]
+                            for h in position:
+                                if h[0]==studentChose:
+                                    position=database["Cursos"][0][matriculateCourses[int(choice_4)-1]][position.index(h)]
+                                    position_1=database["Cursos"][0][matriculateCourses[int(choice_4)-1]].index(h)
+                            maxNotes=int(database["Cursos"][0][matriculateCourses[int(choice_4)-1]][0][1])
+                            minusNotes=(maxNotes+1)-len(position[0:])
+                            if minusNotes==0:
+                                print("\nEl estudiante tiene todas las notas del curso")
+                                print("\nPresione ENTER para continuar: ")
+                                input()
+                            else:
+                                comp=0
+                                print("NOTAS DISPONIBLES: "+str(minusNotes))
+                                for j in range(0,minusNotes):
+                                    if comp==1:
+                                        break
+                                    notes=""
+                                    while True:
+                                        try:
+                                            notes=input("Digite la nota o q para salir: ")
+                                            if notes=="q":
+                                                comp=1
+                                                break
+                                            else:
+                                                notes=float(notes)
+                                        except ValueError:
+                                            print("Solo numeros.")
                                         else:
-                                            notes=float(notes)
-                                    except ValueError:
-                                        print("Solo numeros.")
-                                    else:
-                                         if notes<0 or notes>5:
-                                            print("Rango (0 hasta 5).")
-                                            continue
-                                         else:
-                                            database["Cursos"][0][matriculateCourses[int(choice_4)-1]][position_1].append(str(notes))
-                                            break
+                                             if notes<0 or notes>5:
+                                                print("Rango (0 hasta 5).")
+                                                continue
+                                             else:
+                                                database["Cursos"][0][matriculateCourses[int(choice_4)-1]][position_1].append(str(notes))
+                                                break
                                 
                         print("\nDATOS INGRESADOS\n\nPresione ENTER para continuar: ")
                         input()
                         
                     elif choice_2=="4":
                         j=1
-                        print("\nMATERIAS MATRICULADAS POR: "+database["Estudiantes"][0][estudiante_2]+"\n")
+                        print("\nMATERIAS MATRICULADAS POR: "+database["Estudiantes"][0][studentChose]+"\n")
                         for i in coursesStudent[2]:
                             print(str(j)+"."+i.title())
                             j=j+1
                         print("\nPresione ENTER para continuar: ")
                         input()
                     elif choice_2=="5":
-                        bd.htmlVis(database,estudiante_2)
+                        
+                        try:
+                            bd.htmlVis(database,studentChose)
+                        except Exception:
+                            print("No tiene informacion presiones ENTER para continuar")
+                            input()
+                            continue
+                            
+                        
                     elif choice_2=="6":
                         break
             elif choice_1=="4":
